@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:apollo="http://www.apollo.com/schema/apollo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.apollo.com/schema/apollo
+       http://www.apollo.com/schema/apollo.xsd">
+
+    <apollo:application name="client"/>
+
+    <apollo:nameservice id="nameService" protocol="zookeeper" address="127.0.0.1:2181"/>
+
+    <apollo:reference id="helloService" interface="cn.com.apollo.demo.HelloService" timeout="5000"
+                      group="catgroup" uri="localhost:8890"/>
+
+</beans>
