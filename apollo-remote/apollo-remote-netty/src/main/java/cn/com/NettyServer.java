@@ -29,8 +29,8 @@ public class NettyServer {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private volatile NioEventLoopGroup bossGroup = null;
-    private volatile NioEventLoopGroup workerGroup = null;
+    private NioEventLoopGroup bossGroup = null;
+    private NioEventLoopGroup workerGroup = null;
     private URI uri;
     private Channel channel;
     private Handler handler;

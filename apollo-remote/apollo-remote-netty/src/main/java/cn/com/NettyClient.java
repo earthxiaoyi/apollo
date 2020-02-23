@@ -11,6 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient extends AbstractChannel {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private static final EventLoopGroup bossGroup = new NioEventLoopGroup(Constant.IO_THREAD_DEFAULT_NUM, new DefaultThreadFactory("NettyClientHandler", true));
 
     private Bootstrap bootstrap;
     private volatile Channel channel;
@@ -59,13 +62,12 @@ public class NettyClient extends AbstractChannel {
     }
 
     private void initClient() {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(bossGroup)
-                .channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
