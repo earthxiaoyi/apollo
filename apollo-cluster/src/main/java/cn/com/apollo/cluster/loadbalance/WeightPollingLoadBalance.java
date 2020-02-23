@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 加权轮询算法
+ * @author jiaming
  */
 public class WeightPollingLoadBalance extends AbstractLoadBalance {
 

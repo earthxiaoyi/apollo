@@ -4,7 +4,7 @@ import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.invoke.Invoker;
 import cn.com.apollo.invoke.RpcInvoker;
-import cn.com.apollo.proxy.jdk.JdkProxyHandler;
+import cn.com.apollo.proxy.jdk.JdkProxyFactory;
 import cn.com.apollo.reference.ApolloReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class ReferenceConfig {
                     int port = Integer.parseInt(uri.substring(i + 1));
                     invoker = new RpcInvoker(interfaceClass, new URI(host, port, interfaceName));
                 } catch (Exception e) {
-                    throw new RuntimeException("uri config error,uri:" + getUri(), e);
+                    throw new IllegalArgumentException("uri config error,uri:" + getUri(), e);
                 }
             }
         } else {
@@ -59,12 +59,12 @@ public class ReferenceConfig {
             uri.setPort(Constant.PORT);
             uri.setServiceName(getInterfaceClass().getName());
             uri.putParameter(Constant.IO_DECODER, true);
-            uri.setProtocol("apollo");
+            uri.setProtocol(Constant.PROTOCOL);
             invoker = refer.refer(getInterfaceClass(), nameServiceConfig, uri);
         }
-        //创建代理类
-        JdkProxyHandler proxyHandler = new JdkProxyHandler(getInterfaceClass(), invoker, getInterface());
-        obj = proxyHandler.getProxy();
+        //TODO 创建代理类,这里需要改造成ProxyFactory.getProxy的方式获取代理类
+        JdkProxyFactory proxyFactory = new JdkProxyFactory();
+        obj = proxyFactory.getProxy(invoker,new Class[]{getInterfaceClass()});
         init = true;
         return obj;
     }
@@ -72,10 +72,10 @@ public class ReferenceConfig {
     private void checkConfig() {
         String interfaceName = this.getInterface();
         if (interfaceName == null || interfaceName.length() == 0) {
-            throw new RuntimeException("interfaceName is not null");
+            throw new IllegalArgumentException("interfaceName is not null");
         }
         if (uri == null) {
-            throw new RuntimeException("uri is not null");
+            throw new IllegalArgumentException("uri is not null");
         }
     }
 
@@ -154,7 +154,7 @@ public class ReferenceConfig {
             InetAddress localHost = InetAddress.getLocalHost();
             ip = localHost.getHostAddress();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e.getMessage(),e);
         }
         return ip;
     }

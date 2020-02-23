@@ -153,7 +153,7 @@ public class ServiceLoad<T> {
     private Map<String, Class<?>> getServiceClasses() {
         Map<String, Class<?>> classes = cachedClass.getValue();
         if (classes == null) {
-            classes = new HashMap<>();
+            classes = new HashMap<>(8);
             loadClasses(classes, SERVICES_PATH, type.getName());
             cachedClass.setValue(classes);
         }

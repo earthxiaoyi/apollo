@@ -12,6 +12,9 @@ import org.apache.zookeeper.data.Stat;
 
 import java.util.List;
 
+/**
+ * @author jiaming
+ */
 public class CuratorClient {
 
     private CuratorFramework client = null;
@@ -39,7 +42,7 @@ public class CuratorClient {
 
     public void createPersistent(String path) {
         try {
-            client.create().forPath(path);
+            client.create().creatingParentsIfNeeded().forPath(path);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -47,7 +50,7 @@ public class CuratorClient {
 
     public void createEphemeral(String path) {
         try {
-            client.create().withMode(CreateMode.EPHEMERAL).forPath(path);
+            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -56,7 +59,7 @@ public class CuratorClient {
     public boolean checkExist(String path) {
         try {
             Stat stat = client.checkExists().forPath(path);
-            if (stat != null) {
+            if (stat == null) {
                 return true;
             }
         } catch (Exception e) {

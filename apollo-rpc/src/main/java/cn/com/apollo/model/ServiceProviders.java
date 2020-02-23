@@ -14,23 +14,23 @@ public class ServiceProviders {
      * key：interfaceName+"."+group+"."+version
      * value：service
      */
-    private static final ConcurrentHashMap<String, ServiceModel> exportMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, ServiceModel> EXPORT_MAP = new ConcurrentHashMap<>();
 
     public static void setServiceModel(String serviceKey, ServiceModel model) {
-        if (exportMap.putIfAbsent(serviceKey, model) != null) {
+        if (EXPORT_MAP.putIfAbsent(serviceKey, model) != null) {
             log.warn("already same service " + serviceKey);
         }
     }
 
     public static ServiceModel getServiceModel(String serviceKey) {
         if (serviceKey == null || serviceKey.length() == 0) {
-            throw new RuntimeException("serviceKey is not null");
+            throw new IllegalArgumentException("serviceKey is not null");
         }
-        return exportMap.get(serviceKey);
+        return EXPORT_MAP.get(serviceKey);
     }
 
     public static ConcurrentHashMap<String, ServiceModel> getExportMap() {
-        return exportMap;
+        return EXPORT_MAP;
     }
 
 

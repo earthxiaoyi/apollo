@@ -3,6 +3,7 @@ package cn.com.apollo.invoke;
 import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.Result;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
             result = doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(),
                     invocation.getArgs());
         } catch (Throwable e) {
-            throw new RuntimeException("fail to cn.com.apollo.rpc.invoke the method " + invocation.getMethodName() + " uri " + uri.getUriString(), e);
+            throw new RpcException("fail to invoke the method " + invocation.getMethodName() + " uri " + uri.getUriString(), e);
         }
         return result;
     }

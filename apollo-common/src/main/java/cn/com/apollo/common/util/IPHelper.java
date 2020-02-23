@@ -8,14 +8,14 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * @author liyebing created on 17/1/30.
+ * @author jiaming
  * @version $Id$
  */
 public class IPHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(IPHelper.class);
 
-    private static String hostIp = null;
+    private static String hostIp;
 
 
     /**
@@ -38,7 +38,7 @@ public class IPHelper {
         try {
             Enumeration<NetworkInterface> netInterfaces =
                     NetworkInterface.getNetworkInterfaces();
-            InetAddress ip = null;
+            InetAddress ip;
             boolean finded = false;// 是否找到外网IP
             while (netInterfaces.hasMoreElements() && !finded) {
                 NetworkInterface ni = netInterfaces.nextElement();

@@ -48,7 +48,7 @@ public class ApolloFactoryBeanDefinitionParser implements BeanDefinitionParser {
         }
         if (id != null && id.trim().length() > 0) {
             if (parserContext.getRegistry().containsBeanDefinition(id)) {
-                throw new RuntimeException("重复的id：" + id);
+                throw new IllegalStateException("重复的id：" + id);
             }
             parserContext.getRegistry().registerBeanDefinition(id, rootBeanDefinition);
             rootBeanDefinition.getPropertyValues().addPropertyValue("id", id);
@@ -81,7 +81,7 @@ public class ApolloFactoryBeanDefinitionParser implements BeanDefinitionParser {
                         if ("ref".equals(property) && parserContext.getRegistry().containsBeanDefinition(value)) {
                             BeanDefinition beanDefinition = parserContext.getRegistry().getBeanDefinition(value);
                             if (!beanDefinition.isSingleton()) {
-                                throw new RuntimeException("ref repeat，ref:" + value);
+                                throw new IllegalStateException("ref repeat，ref:" + value);
                             }
                             reference = new RuntimeBeanReference(value);
                         }

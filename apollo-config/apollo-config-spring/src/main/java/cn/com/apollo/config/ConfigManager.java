@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConfigManager {
 
-    private static final ConfigManager configManeger = new ConfigManager();
+    private static final ConfigManager CONFIG_MANAGER = new ConfigManager();
 
     private final Map<String, NameServiceConfig> nameServices = new ConcurrentHashMap<>();
     private final Map<String, ReferenceConfig> references = new ConcurrentHashMap<>();
@@ -16,7 +16,7 @@ public class ConfigManager {
     }
 
     public static ConfigManager getInstance() {
-        return configManeger;
+        return CONFIG_MANAGER;
     }
 
     public void addNameService(NameServiceConfig nameServiceConfig) {

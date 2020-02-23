@@ -57,7 +57,7 @@ public class Invocation implements Serializable {
             return;
         }
         if (attributes == null) {
-            this.attributes = new HashMap<>();
+            this.attributes = new HashMap<>(8);
         }
         this.attributes.putIfAbsent(key, value);
     }

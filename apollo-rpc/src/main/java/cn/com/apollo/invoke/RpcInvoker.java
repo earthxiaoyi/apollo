@@ -2,6 +2,7 @@ package cn.com.apollo.invoke;
 
 import cn.com.NettyClient;
 import cn.com.apollo.common.*;
+import cn.com.apollo.common.exception.RpcException;
 import cn.com.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class RpcInvoker<T> extends AbstractInvoker<T> {
         } else {
             result = (Result) response.getData();
             Throwable exception = result.getException();
-            throw new RuntimeException(exception);
+            throw new RpcException(exception.getMessage(),exception);
         }
         return result;
     }

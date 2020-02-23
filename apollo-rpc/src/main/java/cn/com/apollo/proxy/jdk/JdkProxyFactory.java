@@ -6,8 +6,17 @@ import cn.com.apollo.invoke.AbstractProxyInvoker;
 import cn.com.apollo.invoke.Invoker;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
+/**
+ * @author jiaming
+ */
 public class JdkProxyFactory {
+
+    public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaceClasses) {
+        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                interfaceClasses, new InvokerProxyHandler(invoker));
+    }
 
     public static <T> Invoker<T> getInvoker(T proxy, Class<T> type, URI uri) {
         return new AbstractProxyInvoker<T>(proxy, type, uri) {

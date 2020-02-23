@@ -30,7 +30,7 @@ public class DecoderHandler implements Handler {
             request.setData(data);
             handler.recevied(channel, request);
         } else {
-            throw new RuntimeException("无法识别的消息");
+            throw new IllegalStateException("无法识别的消息");
         }
     }
 

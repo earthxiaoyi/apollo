@@ -4,6 +4,7 @@ import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.Header;
 import cn.com.apollo.common.Request;
 import cn.com.apollo.common.Response;
+import cn.com.apollo.common.exception.RpcException;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,13 +84,13 @@ public class DefaultFuture implements Future {
                     }
                 }
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                logger.warn(e.getMessage(), e);
             } finally {
                 lock.unlock();
             }
         }
         if (!isDone()) {
-            throw new RuntimeException("cn.com.apollo.rpc.invoke timeout,request invoker id :" + request.getHeader().getId());
+            throw new RpcException("invoke timeout,request invoker id :" + request.getHeader().getId());
         }
         return response;
     }
@@ -101,7 +102,7 @@ public class DefaultFuture implements Future {
                 if (null != defaultFuture) {
                     defaultFuture.doReceive(response);
                 } else {
-                    logger.warn("cn.com.apollo.rpc.invoke id is not get defaultFuture,invoker id:{}", response.getHeader().getId());
+                    logger.warn("invoke id is not get defaultFuture,invoker id:{}", response.getHeader().getId());
                 }
             }
         } finally {

@@ -12,18 +12,18 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  */
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
 
-    private ApolloCodeC codeC;
+    private ApolloCodeC codec;
     private static final String SERIAL_KEY = "kryo";
 
     public MessageDecoder(int maxFrameLength, int lengthFieldOffset,
                           int lengthFieldLength, URI uri) {
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
-        this.codeC = new ApolloCodeC(uri);
+        this.codec = new ApolloCodeC(uri);
     }
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-        Object object = codeC.decoder(SERIAL_KEY, in);
+        Object object = codec.decoder(SERIAL_KEY, in);
         return object;
     }
 }

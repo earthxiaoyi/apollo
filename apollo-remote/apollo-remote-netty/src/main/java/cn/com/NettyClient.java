@@ -2,6 +2,7 @@ package cn.com;
 
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RemoteException;
 import cn.com.dispatcher.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -53,7 +54,7 @@ public class NettyClient extends AbstractChannel {
                 connected = true;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RemoteException("client:" + getUri() + "to connnect server:" + getUri().getHost() + ",error message is:" + e.getMessage(), e);
         }
     }
 
@@ -89,7 +90,7 @@ public class NettyClient extends AbstractChannel {
             channel.close();
             destory = true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.warn("netty close exception:" + e.getMessage(), e);
         }
     }
 

@@ -4,6 +4,7 @@ package cn.com.apollo.invoke;
 import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.Result;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
         try {
             result = doInvoke(invocation,uri);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e.getMessage(),e);
         }
         return result;
     }

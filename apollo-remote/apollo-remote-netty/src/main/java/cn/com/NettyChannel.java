@@ -3,6 +3,8 @@ package cn.com;
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.Request;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RemoteException;
+import cn.com.apollo.common.exception.RpcException;
 import cn.com.exchange.DefaultFuture;
 import cn.com.exchange.Future;
 import io.netty.channel.Channel;
@@ -14,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class NettyChannel extends AbstractChannel {
 
-    private static final ConcurrentHashMap<Channel, NettyChannel> channelMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Channel, NettyChannel> CHANNEL_MAP = new ConcurrentHashMap<>();
 
     private Channel channel;
     private volatile boolean destory = false;
@@ -28,10 +30,10 @@ public class NettyChannel extends AbstractChannel {
     @Override
     public Future send(Object obj, int timeout) {
         if (null == obj) {
-            throw new RuntimeException("msg 不能为null");
+            throw new RpcException("send message is not be null");
         }
         if (destory || null == channel || !channel.isActive()) {
-            throw new RuntimeException("连接已经关闭，不能发送消息,host:" + getUri().getHost());
+            throw new RemoteException("connect is closed not send message,host:" + getUri().getHost());
         }
         boolean success;
         try {
@@ -42,10 +44,10 @@ public class NettyChannel extends AbstractChannel {
                 throw cause;
             }
         } catch (Throwable e) {
-            throw new RuntimeException("调用失败：" + e.getMessage() + channel.remoteAddress());
+            throw new RpcException("fail to invoke " + channel.remoteAddress(), e);
         }
         if (!success) {
-            throw new RuntimeException("调用失败：" + channel.remoteAddress());
+            throw new RpcException("fail to invoke " + channel.remoteAddress());
         }
         DefaultFuture future = DefaultFuture.getDefaultFuture(timeout, (Request) obj);
         return future;
@@ -54,10 +56,10 @@ public class NettyChannel extends AbstractChannel {
     @Override
     public void send(Object message, boolean sent) {
         if (null == message) {
-            throw new RuntimeException("msg不能为null");
+            throw new IllegalArgumentException("message is not be null");
         }
         if (destory || null == channel || !channel.isActive()) {
-            throw new RuntimeException("连接已经关闭，不能发送消息,host:" + getUri().getHost());
+            throw new RemoteException("connect is closed,not send message,host:" + getUri().getHost());
         }
         boolean success = true;
         try {
@@ -70,10 +72,10 @@ public class NettyChannel extends AbstractChannel {
                 throw cause;
             }
         } catch (Throwable e) {
-            throw new RuntimeException("调用失败：" + e.getMessage() + channel.remoteAddress());
+            throw new RpcException("fail invoke server：" + channel.remoteAddress() + "", e);
         }
         if (!success) {
-            throw new RuntimeException("调用失败：" + channel.remoteAddress());
+            throw new RpcException("fail invoke server：" + channel.remoteAddress());
         }
     }
 
@@ -113,11 +115,11 @@ public class NettyChannel extends AbstractChannel {
     }
 
     public static NettyChannel getChannel(Channel channel, URI uri) {
-        NettyChannel nc = channelMap.get(channel);
+        NettyChannel nc = CHANNEL_MAP.get(channel);
         if (nc == null) {
             NettyChannel nettyChannel = new NettyChannel(uri, channel);
             if (channel.isActive()) {
-                nc = channelMap.putIfAbsent(channel, nettyChannel);
+                nc = CHANNEL_MAP.putIfAbsent(channel, nettyChannel);
             }
             if (nc == null) {
                 nc = nettyChannel;

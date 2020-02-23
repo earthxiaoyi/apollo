@@ -4,6 +4,7 @@ import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.Result;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RpcException;
 import cn.com.apollo.common.spi.Active;
 import cn.com.apollo.invoke.Invoker;
 
@@ -21,7 +22,7 @@ public class TpsFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws Exception {
         if (!limit.isPassable(invoker.getUri())) {
-            throw new RuntimeException("cn.com.apollo.rpc.invoke service " + invoker.getInterface().getName() + " fail. because exceed service max tps");
+            throw new RpcException("invoke service " + invoker.getInterface().getName() + " fail. because exceed service max tps");
         }
         return invoker.invoke(invocation);
     }
@@ -66,7 +67,7 @@ class Limit {
         return true;
     }
 
-    class State {
+    static class State {
 
         private String name;
         private int tps;

@@ -1,5 +1,6 @@
 package cn.com.dispatcher;
 
+import cn.com.HandlerException;
 import cn.com.NettyChannel;
 import cn.com.apollo.common.URI;
 import cn.com.event.ChannelEventHandler;
@@ -14,12 +15,14 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by jiaming on 2019/5/3.
+ * @author jiaming
  */
 public class AllHandlerDispatcher extends ChannelDuplexHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AllHandlerDispatcher.class);
 
+    private URI uri;
+    private Handler handler;
     private static final ExecutorService executorService = new ThreadPoolExecutor(10, 10, 5000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000), new ThreadFactory() {
 
         private AtomicInteger atomicInteger = new AtomicInteger(0);
@@ -27,13 +30,11 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = new Thread(r);
-            thread.setName("all-cn.com.apollo.rpc.handler-dispatcher-" + atomicInteger.incrementAndGet());
+            thread.setName("allhandler-dispatcher-" + atomicInteger.incrementAndGet());
             return thread;
         }
     });
 
-    private URI uri;
-    private Handler handler;
 
     public AllHandlerDispatcher(Handler handler, URI uri) {
         this.handler = handler;
@@ -47,7 +48,7 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             NettyChannel nettyChannel = NettyChannel.getChannel(channel, uri);
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.CONNECTED));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HandlerException(e.getMessage(), e);
         }
     }
 
@@ -58,7 +59,7 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             NettyChannel nettyChannel = NettyChannel.getChannel(channel, uri);
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.DISCONNECTED));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HandlerException(e.getMessage(), e);
         }
     }
 
@@ -69,7 +70,7 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             NettyChannel nettyChannel = NettyChannel.getChannel(channel, uri);
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, obj, ChannelEventHandler.ChannelEventState.RECEIVED));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HandlerException(e.getMessage(), e);
         }
     }
 
@@ -80,7 +81,7 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             NettyChannel nettyChannel = NettyChannel.getChannel(channel, uri);
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.CAUGHT, cause));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new HandlerException(e.getMessage(), e);
         }
     }
 }

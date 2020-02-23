@@ -11,19 +11,19 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class MessageEncoder extends MessageToByteEncoder {
 
-    private ApolloCodeC codeC;
+    private ApolloCodeC codec;
     private static final String SERIAL_KEY = "kryo";
 
     public MessageEncoder(URI uri) {
-        this.codeC = new ApolloCodeC(uri);
+        this.codec = new ApolloCodeC(uri);
     }
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object obj, ByteBuf byteBuf) throws Exception {
         if (obj == null) {
-            throw new RuntimeException("the ecode CatMessage is null");
+            throw new IllegalArgumentException("the encode message is null");
         }
-        codeC.encoder(SERIAL_KEY, byteBuf, obj);
+        codec.encoder(SERIAL_KEY, byteBuf, obj);
     }
 
 

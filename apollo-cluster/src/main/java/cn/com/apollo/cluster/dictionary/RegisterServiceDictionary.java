@@ -74,7 +74,7 @@ public class RegisterServiceDictionary<T> implements ServiceDictionary<T> {
         //TODO 需要做个销毁逻辑。
         //获取老的urlInvokerMap,做为下一步销毁用
         Map<String, Invoker<T>> oldInvokerMap = this.invokerMap;
-        Map<String, Invoker<T>> newInvokerMap = new HashMap<>();
+        Map<String, Invoker<T>> newInvokerMap = new HashMap<>(8);
         Set<String> keys = new TreeSet<>();
         for (URI uri : newUriList) {
             //根据uri创建Invoker

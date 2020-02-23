@@ -1,5 +1,6 @@
 package cn.com.apollo.config;
 
+import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.common.spi.ServiceLoad;
 import cn.com.apollo.common.util.IPHelper;
@@ -103,7 +104,7 @@ public class ServiceConfig<T> {
                 Class<?> aClass = Class.forName(interfaceName);
                 return aClass;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e.getMessage(), e);
             }
         }
         return interfaceClass;
@@ -117,7 +118,7 @@ public class ServiceConfig<T> {
         uri.setPort(port);
         uri.setHost(IPHelper.getHostFirstIp());
         uri.setServiceName(interfaceName);
-        uri.setProtocol("cat");
+        uri.setProtocol(Constant.PROTOCOL);
         //TODO 组装service标签参数
         export.export(ref, interfaceClass, nameServiceConfig, uri);
     }
@@ -129,32 +130,32 @@ public class ServiceConfig<T> {
         if (getPort() <= 0 || getPort() > 65535) {
             //检查register
             if (getNameServiceConfigList() == null || getNameServiceConfigList().isEmpty()) {
-                throw new RuntimeException("nameService is not null");
+                throw new IllegalArgumentException("nameService is not null");
             }
         }
         //检查interface 是否为null
         String anInterface = getInterface();
         if (anInterface == null || anInterface.length() == 0) {
-            throw new RuntimeException("interface is not null");
+            throw new IllegalArgumentException("interface is not null");
         }
         if (interfaceClass == null) {
             try {
                 interfaceClass = Class.forName(interfaceName);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e.getMessage(), e);
             }
         }
         //检查本地bean
         if (getRef() == null) {
-            throw new RuntimeException("ref is not null");
+            throw new IllegalArgumentException("ref is not null");
         }
         //检查ref是否为interface的子类
         if (!interfaceClass.isInstance(ref)) {
-            throw new RuntimeException("ref：" + ref + " is not subClass of " + getInterfaceClass());
+            throw new IllegalArgumentException("ref：" + ref + " is not subClass of " + getInterfaceClass());
         }
         //检查application
         if (getApplicationConfig() == null) {
-            throw new RuntimeException("application is not null");
+            throw new IllegalArgumentException("application is not null");
         }
     }
 

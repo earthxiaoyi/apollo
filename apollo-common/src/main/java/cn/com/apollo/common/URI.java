@@ -191,13 +191,13 @@ public class URI implements Serializable {
 
     public static URI toURI(String s) {
         if (s == null || s.length() == 0) {
-            throw new RuntimeException("touri fail,uri is not null");
+            throw new IllegalArgumentException("touri fail,uri is not null");
         }
         URI uri = new URI();
         //parse:protocol host port interface
         int i = s.indexOf("?");
         if (i >= 0) {
-            Map<String, String> params = new HashMap<>();
+            Map<String, String> params = new HashMap<>(8);
             String parametersStr = s.substring(i + 1);
             String[] parameters = parametersStr.split("&");
             for (String parameter : parameters) {
@@ -238,5 +238,8 @@ public class URI implements Serializable {
         return sb.toString();
     }
 
-
+    @Override
+    public String toString() {
+        return buildString();
+    }
 }

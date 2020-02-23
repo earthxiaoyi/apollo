@@ -2,6 +2,7 @@ package cn.com.apollo.nameservice;
 
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
+import cn.com.apollo.common.exception.RpcException;
 import cn.com.apollo.nameservice.curator.CuratorClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -18,11 +19,11 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ZookeeperNameService implements NameService {
+public class ZookeeperNameServiceImpl implements NameService {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final ConcurrentHashMap<String, ZookeeperNameService> zookeeperRegisterMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, ZookeeperNameServiceImpl> ZOOKEEPER_REGISTER_MAP = new ConcurrentHashMap<>();
     private String url;
     private volatile boolean init = false;
     private CuratorClient client = null;
@@ -41,7 +42,7 @@ public class ZookeeperNameService implements NameService {
     });
 
 
-    public ZookeeperNameService(String url, Notify notify) {
+    public ZookeeperNameServiceImpl(String url, Notify notify) {
         this.url = url;
         this.notify = notify;
         if (!init) {
@@ -49,7 +50,7 @@ public class ZookeeperNameService implements NameService {
         }
     }
 
-    public ZookeeperNameService(String url) {
+    public ZookeeperNameServiceImpl(String url) {
         this.url = url;
         if (!init) {
             this.client = new CuratorClient(url, 5000);
@@ -59,7 +60,7 @@ public class ZookeeperNameService implements NameService {
     @Override
     public void register(String serviceName, URI uri) {
         if (serviceName == null || "".equals(serviceName.trim())) {
-            throw new RuntimeException("serviceName is not null");
+            throw new IllegalArgumentException("serviceName is not null");
         }
         String nameService = "/" + Constant.NAME_SERVICE_PATH + "/" + serviceName;
         try {
@@ -75,7 +76,7 @@ public class ZookeeperNameService implements NameService {
             }
             //验证服务是否已经被本机注册
             List<String> providerList = client.getChildren(nameServiceProvider);
-            if (!providerList.isEmpty()) {
+            if (providerList != null && !providerList.isEmpty()) {
                 String serviceKey = uri.getUriString();
                 if (providerList.contains(serviceKey)) {
                     log.warn("service is register,servicename:{},uri:{}", serviceName, uri.getUriString());
@@ -87,14 +88,14 @@ public class ZookeeperNameService implements NameService {
             String path = nameServiceProvider + "/" + URLEncoder.encode(provider, "UTF-8");
             client.createEphemeral(path);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e.getMessage(), e);
         }
     }
 
     @Override
     public URI subscribe(String serviceName, URI uri) {
         if (serviceName == null || "".equals(serviceName.trim())) {
-            throw new RuntimeException("serviceName is not null");
+            throw new IllegalArgumentException("serviceName is not null");
         }
         try {
             String nameService = "/" + Constant.NAME_SERVICE_PATH + "/" + serviceName;
@@ -107,7 +108,7 @@ public class ZookeeperNameService implements NameService {
                 client.createPersistent(nameServiceConsumer);
             }
             List<String> consumerList = client.getChildren(nameServiceConsumer);
-            if (!consumerList.isEmpty()) {
+            if (consumerList != null || !consumerList.isEmpty()) {
                 String serviceKey = uri.getUriString();
                 if (consumerList.contains(serviceKey)) {
                     return uri;
@@ -120,15 +121,17 @@ public class ZookeeperNameService implements NameService {
             //订阅服务
             String serviceProviderPath = nameService + "/" + Constant.PROVIDER;
             List<String> providerList = client.getChildren(serviceProviderPath);
-            List<URI> uris = new ArrayList<>(providerList.size());
-            for (String providerPath : providerList) {
-                uris.add(URI.toURI(URLDecoder.decode(providerPath, "UTF-8")));
+            if (providerList != null && !providerList.isEmpty()) {
+                List<URI> uris = new ArrayList<>(providerList.size());
+                for (String providerPath : providerList) {
+                    uris.add(URI.toURI(URLDecoder.decode(providerPath, "UTF-8")));
+                }
+                notify.notify(uris);
             }
-            notify.notify(uris);
             //添加监听
             addListener(serviceProviderPath);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e.getMessage(), e);
         }
         return uri;
     }
@@ -156,11 +159,12 @@ public class ZookeeperNameService implements NameService {
             }, executorService);
             cache.start();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e.getMessage(), e);
         }
     }
 
     public void setNotify(Notify notify) {
         this.notify = notify;
     }
+
 }

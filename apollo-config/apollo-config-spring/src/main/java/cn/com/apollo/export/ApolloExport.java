@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ApolloExport implements Export {
 
-    private static final ConcurrentHashMap<String, NettyServer> server = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, NettyServer> SERVER = new ConcurrentHashMap<>();
 
     private NameServiceFactory nameServiceFactory = ServiceLoad.getServiceLoad(NameServiceFactory.class).getDefaultService();
 
@@ -57,10 +57,10 @@ public class ApolloExport implements Export {
      */
     private void startServer(URI uri) {
         String address = uri.getHost() + ":" + uri.getPort();
-        if (server.get(address) == null) {
+        if (SERVER.get(address) == null) {
             NettyServer nettyServer = new NettyServer(uri, new ApolloHandler());
             nettyServer.start();
-            server.putIfAbsent(address, nettyServer);
+            SERVER.putIfAbsent(address, nettyServer);
         }
     }
 

@@ -112,7 +112,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker {
         try {
             serviceDictionary.destory();
         } catch (Exception e) {
-            throw new RuntimeException("serviceDictionary destory fail");
+            log.warn("serviceDictionary destory fail," + e.getMessage(), e);
         }
     }
 
