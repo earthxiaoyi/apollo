@@ -5,11 +5,9 @@ import cn.com.exchange.Future;
 import java.net.InetSocketAddress;
 
 public interface Channel {
-    Future send(Object obj, int timeout);
+    Future send(Object message, int timeout);
 
     void send(Object message, boolean sent);
-
-    Future send(Object obj);
 
     void close();
 

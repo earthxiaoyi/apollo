@@ -40,8 +40,8 @@ public class ApolloCodeC {
      */
     public void encoder(String serial, ByteBuf byteBuf, Object msg) {
         Serializer serializer = getSerializer(serial);
-        Header header = null;
-        Object mData = null;
+        Header header;
+        Object mData;
         if (msg instanceof Request) {
             Request request = (Request) msg;
             header = request.getHeader();
@@ -58,11 +58,6 @@ public class ApolloCodeC {
         //16-23    事件类型：0请求 1响应 2心跳
         byteBuf.writeByte(header.getEventType());
         //24-31
-        // 状态：0 success
-        // 1 request_timeout
-        // 2 response_timeout
-        // 3 bad_request
-        // 4 bad_response
         byteBuf.writeByte(header.getStatus());
         //32-39    序列化协议：0 KryoSerialization
         byteBuf.writeByte(header.getSerialType());
@@ -74,7 +69,6 @@ public class ApolloCodeC {
         int saveWriterIndex = byteBuf.writerIndex();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         serializer.serialize(mData, outputStream);
-        //TODO 需要进行测试
         byteBuf.writeBytes(outputStream.toByteArray());
         //body 序列化后的长度
         int bodyLength = byteBuf.writerIndex() - saveWriterIndex;
@@ -91,14 +85,6 @@ public class ApolloCodeC {
      * @return
      */
     public Object decoder(String serial, ByteBuf byteBuf) {
-        /*
-         * 0-15     魔数字节MAGIC，0xca1100
-         * 16-23    事件类型：0请求 1响应 2心跳
-         * 24-31    状态：0success 1request_timeout 2response_timeout 3bad_request 4bad_response
-         * 32-39    序列化协议：0 KryoSerialization
-         * 40-103   请求id
-         * 104-135  消息长度
-         * */
         short magic = byteBuf.readShort();
         if (Constant.MAGIC != magic) {
             return null;
@@ -106,9 +92,7 @@ public class ApolloCodeC {
         byte eventType = byteBuf.readByte();
         byte status = byteBuf.readByte();
         byte searialType = byteBuf.readByte();
-        //默认kyro序列化
         long id = byteBuf.readLong();
-        //消息长度
         int msgLength = byteBuf.readInt();
         int readerIndex = byteBuf.readerIndex();
         int bodyLength = msgLength - Constant.HEADER_LENGTH;

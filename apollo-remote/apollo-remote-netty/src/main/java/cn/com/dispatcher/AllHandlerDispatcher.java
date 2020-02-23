@@ -49,6 +49,8 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.CONNECTED));
         } catch (Exception e) {
             throw new HandlerException(e.getMessage(), e);
+        } finally {
+            NettyChannel.removeChannelIfDisconnected(ctx.channel());
         }
     }
 
@@ -60,6 +62,8 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.DISCONNECTED));
         } catch (Exception e) {
             throw new HandlerException(e.getMessage(), e);
+        } finally {
+            NettyChannel.removeChannelIfDisconnected(ctx.channel());
         }
     }
 
@@ -71,6 +75,8 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, obj, ChannelEventHandler.ChannelEventState.RECEIVED));
         } catch (Exception e) {
             throw new HandlerException(e.getMessage(), e);
+        } finally {
+            NettyChannel.removeChannelIfDisconnected(ctx.channel());
         }
     }
 
@@ -82,6 +88,8 @@ public class AllHandlerDispatcher extends ChannelDuplexHandler {
             executorService.execute(new ChannelEventHandler(nettyChannel, handler, null, ChannelEventHandler.ChannelEventState.CAUGHT, cause));
         } catch (Exception e) {
             throw new HandlerException(e.getMessage(), e);
+        } finally {
+            NettyChannel.removeChannelIfDisconnected(ctx.channel());
         }
     }
 }

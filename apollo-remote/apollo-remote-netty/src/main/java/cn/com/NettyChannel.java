@@ -28,28 +28,9 @@ public class NettyChannel extends AbstractChannel {
     }
 
     @Override
-    public Future send(Object obj, int timeout) {
-        if (null == obj) {
-            throw new RpcException("send message is not be null");
-        }
-        if (destory || null == channel || !channel.isActive()) {
-            throw new RemoteException("connect is closed not send message,host:" + getUri().getHost());
-        }
-        boolean success;
-        try {
-            ChannelFuture future = channel.writeAndFlush(obj);
-            success = future.await(timeout, TimeUnit.MILLISECONDS);
-            Throwable cause = future.cause();
-            if (cause != null) {
-                throw cause;
-            }
-        } catch (Throwable e) {
-            throw new RpcException("fail to invoke " + channel.remoteAddress(), e);
-        }
-        if (!success) {
-            throw new RpcException("fail to invoke " + channel.remoteAddress());
-        }
-        DefaultFuture future = DefaultFuture.getDefaultFuture(timeout, (Request) obj);
+    public Future send(Object message, int timeout) {
+        DefaultFuture future = DefaultFuture.getDefaultFuture(timeout, (Request) message);
+        send(message, false);
         return future;
     }
 
@@ -77,11 +58,6 @@ public class NettyChannel extends AbstractChannel {
         if (!success) {
             throw new RpcException("fail invoke server：" + channel.remoteAddress());
         }
-    }
-
-    @Override
-    public Future send(Object obj) {
-        return send(obj, Constant.TIMEOUT);
     }
 
     @Override
@@ -126,6 +102,12 @@ public class NettyChannel extends AbstractChannel {
             }
         }
         return nc;
+    }
+
+    public static void removeChannelIfDisconnected(Channel channel) {
+        if (channel != null && !channel.isActive()) {
+            CHANNEL_MAP.remove(channel);
+        }
     }
 
 }

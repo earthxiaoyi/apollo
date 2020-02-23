@@ -1,6 +1,5 @@
 package cn.com;
 
-import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
 import cn.com.channel.Channel;
 import cn.com.exchange.Future;
@@ -28,11 +27,6 @@ public abstract class AbstractChannel implements Channel {
         io.netty.channel.Channel channel = getChannel();
         NettyChannel nettyChannel = NettyChannel.getChannel(channel, uri);
         nettyChannel.send(message, sent);
-    }
-
-    @Override
-    public Future send(Object obj) {
-        return send(obj, Constant.TIMEOUT);
     }
 
     public URI getUri() {

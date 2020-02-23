@@ -86,6 +86,7 @@ public class ApolloHandler implements Handler {
 
     @Override
     public void cause(Channel channel, Throwable cause) {
-
+        log.error(cause.getMessage(), cause);
+        System.out.println("server cause");
     }
 }

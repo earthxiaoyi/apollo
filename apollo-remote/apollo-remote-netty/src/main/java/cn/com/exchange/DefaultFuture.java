@@ -39,6 +39,7 @@ public class DefaultFuture implements Future {
         }
     });
 
+    private long id;
     private int timeout;
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
@@ -51,6 +52,7 @@ public class DefaultFuture implements Future {
         this.timeout = timeOut;
         /*this.channel = channel;*/
         this.request = request;
+        this.id = request.getHeader().getId();
         /*CHANNELS.put(request.getHeader().getId(), channel);*/
         FUTURES.put(request.getHeader().getId(), this);
     }
@@ -72,13 +74,13 @@ public class DefaultFuture implements Future {
 
     @Override
     public Object get(long timeout) {
+        long start = System.currentTimeMillis();
         //阻塞
         if (!isDone()) {
-            long start = System.currentTimeMillis();
             lock.lock();
             try {
                 while (!isDone()) {
-                    boolean await = condition.await(timeout, TimeUnit.MILLISECONDS);
+                    condition.await(timeout, TimeUnit.MILLISECONDS);
                     if (isDone() || (System.currentTimeMillis() - start) > timeout) {
                         break;
                     }
@@ -90,7 +92,7 @@ public class DefaultFuture implements Future {
             }
         }
         if (!isDone()) {
-            throw new RpcException("invoke timeout,request invoker id :" + request.getHeader().getId());
+            throw new RpcException("invoke timeout,request invoker id :" + request.getHeader().getId() + ",cost:" + (System.currentTimeMillis() - start));
         }
         return response;
     }
@@ -115,7 +117,7 @@ public class DefaultFuture implements Future {
         lock.lock();
         try {
             this.response = response;
-            condition.signal();
+            condition.signalAll();
         } finally {
             lock.unlock();
         }
@@ -163,6 +165,7 @@ public class DefaultFuture implements Future {
             }
             Response timeoutResponse = new Response();
             Header header = new Header();
+            header.setId(defaultFuture.getId());
             header.setEventType(Constant.RESPONSE);
             header.setStatus(defaultFuture.isSend() ? Constant.RESPONSE_TIMEOUT : Constant.REQUEST_TIMEOUT);
             timeoutResponse.setHeader(header);
@@ -170,5 +173,7 @@ public class DefaultFuture implements Future {
         }
     }
 
-
+    public long getId() {
+        return id;
+    }
 }
