@@ -3,6 +3,7 @@ package cn.com;
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.common.exception.RemoteException;
+import cn.com.code.NettyCodec;
 import cn.com.dispatcher.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -72,9 +73,9 @@ public class NettyClient extends AbstractChannel {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         Integer heartbeatTimeOut = getUri().getParameter(Constant.HEARTBEAT_TIMEOUT, Constant.DEFAULT_HEARTBEAT_TIMEOUT);
-                        ch.pipeline().addLast(new MessageDecoder(Constant.MAX_PAYLOAD,
-                                Constant.MSG_LENGTH_OFFSET, 4, getUri()));
-                        ch.pipeline().addLast(new MessageEncoder(getUri()));
+                        NettyCodec codec = new NettyCodec(getUri());
+                        ch.pipeline().addLast(codec.getDecoder());
+                        ch.pipeline().addLast(codec.getEncoder());
                         ch.pipeline().addLast(new IdleStateHandler(heartbeatTimeOut, 0, 0, TimeUnit.MILLISECONDS));
                         ch.pipeline().addLast(new ClientHandler());
                     }

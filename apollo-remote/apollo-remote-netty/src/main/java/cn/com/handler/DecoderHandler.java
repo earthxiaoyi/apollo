@@ -3,6 +3,7 @@ package cn.com.handler;
 import cn.com.apollo.common.Request;
 import cn.com.channel.Channel;
 import cn.com.code.ApolloCodeC;
+import cn.com.code.DecodeObject;
 
 public class DecoderHandler implements Handler {
 
@@ -26,11 +27,14 @@ public class DecoderHandler implements Handler {
     public void recevied(Channel channel, Object msg) {
         if (msg instanceof Request) {
             Request request = (Request) msg;
-            Object data = ApolloCodeC.decodeBody("kryo", request.getData());
+            Object data = request.getData();
+            if (data instanceof DecodeObject) {
+                data = ApolloCodeC.decodeBody("kryo", (DecodeObject) data);
+            }
             request.setData(data);
             handler.recevied(channel, request);
         } else {
-            throw new IllegalStateException("无法识别的消息");
+            //TODO
         }
     }
 

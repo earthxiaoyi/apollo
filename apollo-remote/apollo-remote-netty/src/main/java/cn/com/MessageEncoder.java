@@ -9,6 +9,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 /**
  * Created by jiaming on 2019/4/27.
  */
+@Deprecated
 public class MessageEncoder extends MessageToByteEncoder {
 
     private ApolloCodeC codec;

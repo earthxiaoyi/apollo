@@ -136,7 +136,7 @@ public class ServiceLoad<T> {
     public T getDefaultService() {
         String defaultServiceName = getDefaultServiceName();
         Holder<Object> holder = cacheInstance.get(defaultServiceName);
-        if (holder == null) {
+        if (holder == null || holder.getValue() == null) {
             return getService(defaultServiceName);
         }
         return (T) holder.getValue();
@@ -199,7 +199,7 @@ public class ServiceLoad<T> {
         Holder<Object> holder = cacheInstance.get(name);
         if (holder == null) {
             holder = new Holder<>();
-            cacheInstance.putIfAbsent(name, holder);
+            cacheInstance.put(name, holder);
         }
         return holder;
     }

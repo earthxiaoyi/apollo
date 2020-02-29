@@ -63,7 +63,6 @@ public class ClientHandler extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error(cause.getMessage(), cause);
-        super.exceptionCaught(ctx, cause);
         NettyChannel.removeChannelIfDisconnected(ctx.channel());
     }
 }

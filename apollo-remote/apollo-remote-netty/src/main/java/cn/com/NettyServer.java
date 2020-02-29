@@ -2,6 +2,7 @@ package cn.com;
 
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
+import cn.com.code.NettyCodec;
 import cn.com.dispatcher.AllHandlerDispatcher;
 import cn.com.handler.DecoderHandler;
 import cn.com.handler.Handler;
@@ -61,10 +62,10 @@ public class NettyServer {
                             protected void initChannel(SocketChannel ch) throws Exception {
                                 Integer heartbeatTimeOut = uri.getParameter(Constant.HEARTBEAT_TIMEOUT, Constant.DEFAULT_HEARTBEAT_TIMEOUT * 3);
                                 //注册解码器
-                                ch.pipeline().addLast(new MessageDecoder(Constant.MAX_PAYLOAD,
-                                        Constant.MSG_LENGTH_OFFSET, 4, uri));
+                                NettyCodec codec = new NettyCodec(uri);
+                                ch.pipeline().addLast(codec.getDecoder());
                                 //注册编码器
-                                ch.pipeline().addLast(new MessageEncoder(uri));
+                                ch.pipeline().addLast(codec.getEncoder());
                                 ch.pipeline().addLast(new IdleStateHandler(heartbeatTimeOut, 0, 0, TimeUnit.MILLISECONDS));
                                 //分发器
                                 ch.pipeline().addLast(new AllHandlerDispatcher(decoderHandler, uri));

@@ -4,6 +4,7 @@ import cn.com.apollo.serialize.Serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -13,11 +14,12 @@ import java.io.OutputStream;
 public class KryoSerializer implements Serializer {
 
     @Override
-    public void serialize(Object t, OutputStream outputStream) {
+    public OutputStream serialize(Object t, OutputStream outputStream) {
         Kryo kryo = KryoThreadLocalFactory.getKryo();
         Output output = new Output(outputStream);
         kryo.writeClassAndObject(output, t);
         output.flush();
+        return output;
     }
 
     @Override

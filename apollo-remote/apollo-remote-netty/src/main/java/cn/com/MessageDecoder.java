@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
  * 消息解码类
  * Created by jiaming on 2019/4/27.
  */
+@Deprecated
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
 
     private static final Logger log = LoggerFactory.getLogger(MessageDecoder.class);

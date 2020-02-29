@@ -14,20 +14,11 @@ package cn.com.apollo.common;
  */
 public class Header {
 
-    private short magic = Constant.MAGIC;
     private byte eventType;
     private byte status;
     private byte serialType;
     private long id;
     private int length;
-
-    public short getMagic() {
-        return magic;
-    }
-
-    public void setMagic(short magic) {
-        this.magic = magic;
-    }
 
     public byte getEventType() {
         return eventType;

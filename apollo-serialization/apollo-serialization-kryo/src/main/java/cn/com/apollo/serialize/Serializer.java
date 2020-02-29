@@ -8,7 +8,7 @@ import java.io.OutputStream;
  */
 public interface Serializer {
 
-    void serialize(Object t, OutputStream outputStream);
+    OutputStream serialize(Object t, OutputStream outputStream);
 
     <T> T deserialize(InputStream inputStream);
 

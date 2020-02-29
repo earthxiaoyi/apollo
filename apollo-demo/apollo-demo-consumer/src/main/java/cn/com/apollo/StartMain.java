@@ -14,7 +14,7 @@ public class StartMain {
         HelloService helloService = context.getBean("helloService", HelloService.class);
         long start = System.currentTimeMillis();
         int n = 3;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < n; i++) {
             new Thread(new WorkThread(helloService)).start();
         }
         long end = System.currentTimeMillis();
@@ -33,7 +33,7 @@ public class StartMain {
 
         @Override
         public void run() {
-            String requestStr = "1111111111 2222222222 2222222222 2222222222 2222222222 1111111111 2222222222 2222222222 2222222222 2222222222";
+            String requestStr = "111111";
             for (int i = 0; i < 10000; i++) {
                 try {
                     String result = service.sayHello(requestStr);
@@ -44,6 +44,7 @@ public class StartMain {
                     e.printStackTrace();
                 }
             }
+            System.out.println(Thread.currentThread().getName()+" finish!");
         }
     }
 

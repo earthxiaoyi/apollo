@@ -11,16 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 /**
- * * apollo rpc协议定义如下：
- * <p>
- * 0-15     魔数字节MAGIC，0xca1100
- * 16-23    事件类型：0请求 1响应 2心跳
- * 24-31    状态：0success 1request_timeout 2response_timeout 3bad_request 4bad_response
- * 32-39    序列化协议：0 KryoSerialization
- * 40-103   请求id
- * 104-135  消息长度
- * <p>
- *
  * @author jiaming
  */
 public class ApolloCodeC {
@@ -54,7 +44,7 @@ public class ApolloCodeC {
             return;
         }
         //0-15     魔数字节MAGIC，0xca1100
-        byteBuf.writeShort(header.getMagic());
+        //byteBuf.writeShort(header.getMagic());
         //16-23    事件类型：0请求 1响应 2心跳
         byteBuf.writeByte(header.getEventType());
         //24-31
@@ -114,7 +104,7 @@ public class ApolloCodeC {
         }
         byteBuf.readerIndex(byteBuf.readerIndex() + bodyLength);
         Header header = new Header();
-        header.setMagic(magic);
+        //header.setMagic(magic);
         header.setEventType(eventType);
         header.setStatus(status);
         header.setSerialType(searialType);
@@ -142,10 +132,13 @@ public class ApolloCodeC {
         return serializer;
     }
 
-    public static Object decodeBody(String serialKey, Object data) {
+    public static Object decodeBody(String serialKey, DecodeObject decodeObject) {
         Serializer serializer = getSerializer(serialKey);
-        ByteBuf byteBuf = (ByteBuf) data;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteBuf.array());
+        byte[] body = decodeObject.getBody();
+        if (body.length == 0) {
+            throw new IllegalStateException("body data is null");
+        }
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(body);
         Object deserialize = serializer.deserialize(inputStream);
         return deserialize;
     }
