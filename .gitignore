@@ -1,7 +1,11 @@
 .target/
-
 # idea ignore
 .idea/
 *.ipr
 *.iml
 *.iws
+/apollo-cluster/target/
+/apollo-rpc/target/
+/apollo-remote/apollo-remote-netty/target/
+/apollo-nameservice/target/
+/apollo-demo/apollo-demo-provider/target/
