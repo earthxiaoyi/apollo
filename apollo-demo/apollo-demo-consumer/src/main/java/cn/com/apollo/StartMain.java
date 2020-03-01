@@ -12,13 +12,10 @@ public class StartMain {
     public static void main(String[] args) throws InterruptedException {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("apollo-client.xml");
         HelloService helloService = context.getBean("helloService", HelloService.class);
-        long start = System.currentTimeMillis();
         int n = 3;
         for (int i = 0; i < n; i++) {
             new Thread(new WorkThread(helloService)).start();
         }
-        long end = System.currentTimeMillis();
-        System.out.println("毫秒：" + (end - start));
         CountDownLatch countDownLatch = new CountDownLatch(1);
         countDownLatch.await();
     }

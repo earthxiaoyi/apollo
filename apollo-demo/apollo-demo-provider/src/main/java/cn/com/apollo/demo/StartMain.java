@@ -6,9 +6,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.concurrent.CountDownLatch;
 
-/**
- * @author jiaming
- */
 @ComponentScan("cn.com.apollo.demo.**")
 @EnableAutoConfiguration
 public class StartMain {

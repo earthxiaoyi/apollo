@@ -8,8 +8,11 @@
        http://www.apollo.com/schema/apollo.xsd">
 
     <apollo:application name="server"/>
+
     <apollo:nameservice id="nameService" protocol="zookeeper" address="127.0.0.1:2181"/>
+
     <bean id="helloServiceImpl" class="cn.com.apollo.demo.HelloServiceImpl"/>
+
     <apollo:service interface="cn.com.apollo.demo.HelloService" ref="helloServiceImpl" port="20030"/>
 
 </beans>
