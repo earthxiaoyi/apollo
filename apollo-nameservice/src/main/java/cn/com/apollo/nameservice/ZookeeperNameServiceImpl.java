@@ -147,12 +147,15 @@ public class ZookeeperNameServiceImpl implements NameService {
             cache.getListenable().addListener(new PathChildrenCacheListener() {
                 @Override
                 public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent event) throws Exception {
-                    List<ChildData> childDataList = event.getInitialData();
-                    if (childDataList != null && !childDataList.isEmpty()) {
-                        List<URI> services = new ArrayList<>(childDataList.size());
-                        for (ChildData childData : childDataList) {
-                            services.add(URI.toURI(childData.getPath()));
+                    ChildData childData = event.getData();
+
+                    if (childData != null) {
+                        List<URI> services = new ArrayList<>();
+                        URI uri = URI.toURI(URLDecoder.decode(childData.getPath(), "UTF-8"));
+                        if (PathChildrenCacheEvent.Type.CHILD_REMOVED == event.getType()) {
+                            uri.setProtocol(Constant.DESTORY_PROTOCOL);
                         }
+                        services.add(uri);
                         notify.notify(services);
                     }
                 }

@@ -7,6 +7,8 @@ public class Constant {
 
     public static final String PROTOCOL = "apollo";
 
+    public static final String DESTORY_PROTOCOL = "destory";
+
     public static final int MAX_PAYLOAD = 8 * 1024 * 1024;
 
     public static final short MAGIC = (short) 0xca1100;

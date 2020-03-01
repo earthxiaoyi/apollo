@@ -90,8 +90,10 @@ public class NettyClient extends AbstractChannel {
     @Override
     public void close() {
         try {
-            channel.close();
-            destory = true;
+            if (channel != null) {
+                channel.close();
+                destory = true;
+            }
         } catch (Exception e) {
             log.warn("netty close exception:" + e.getMessage(), e);
         }

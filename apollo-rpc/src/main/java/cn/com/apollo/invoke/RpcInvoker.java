@@ -85,7 +85,6 @@ public class RpcInvoker<T> extends AbstractInvoker<T> {
     @Override
     public void destory() {
         for (Channel client : channels) {
-            //TODO 未来需要关闭心跳检查任务，断线重连任务
             client.close();
         }
     }

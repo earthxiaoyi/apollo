@@ -63,8 +63,10 @@ public class NettyChannel extends AbstractChannel {
     @Override
     public void close() {
         try {
-            channel.close();
-            isClose = true;
+            if (channel != null) {
+                channel.close();
+                isClose = true;
+            }
         } catch (Throwable e) {
             throw e;
         }

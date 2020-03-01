@@ -77,18 +77,20 @@ public class RegisterServiceDictionary<T> implements ServiceDictionary<T> {
         Map<String, Invoker<T>> newInvokerMap = new HashMap<>(8);
         Set<String> keys = new TreeSet<>();
         for (URI uri : newUriList) {
-            //根据uri创建Invoker
-            String key = uri.getUriString();
-            if (keys.contains(key)) {
-                continue;
+            String serviceKey = uri.getServiceKey();
+            if (!Constant.DESTORY_PROTOCOL.equals(uri.getProtocol())) {
+                //create invoker
+                if (keys.contains(serviceKey)) {
+                    continue;
+                }
+                Map<String, Invoker<T>> invokerMap = this.invokerMap;
+                Invoker<T> invoker = invokerMap == null ? null : invokerMap.get(serviceKey);
+                if (invoker == null) {
+                    invoker = new RpcInvoker<>(serviceType, uri, getClients(uri));
+                }
+                newInvokerMap.put(serviceKey, invoker);
+                keys.add(serviceKey);
             }
-            Map<String, Invoker<T>> invokerMap = this.invokerMap;
-            Invoker<T> invoker = invokerMap == null ? null : invokerMap.get(key);
-            if (invoker == null) {
-                invoker = new RpcInvoker<>(serviceType, uri, getClients(uri));
-            }
-            newInvokerMap.put(key, invoker);
-            keys.add(key);
         }
         keys.clear();
         List<Invoker<T>> newInvokerList = Collections.unmodifiableList(new ArrayList<>(newInvokerMap.values()));
