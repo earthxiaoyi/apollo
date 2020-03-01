@@ -7,7 +7,7 @@ import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.Result;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.common.exception.RpcException;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 
 import java.util.ArrayList;
 import java.util.List;

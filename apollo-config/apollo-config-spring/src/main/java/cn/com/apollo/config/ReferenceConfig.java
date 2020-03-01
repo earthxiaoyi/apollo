@@ -2,9 +2,9 @@ package cn.com.apollo.config;
 
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.URI;
-import cn.com.apollo.invoke.Invoker;
-import cn.com.apollo.invoke.RpcInvoker;
-import cn.com.apollo.proxy.jdk.JdkProxyFactory;
+import cn.com.apollo.rpc.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.RpcInvoker;
+import cn.com.apollo.rpc.proxy.jdk.JdkProxyFactory;
 import cn.com.apollo.reference.ApolloReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

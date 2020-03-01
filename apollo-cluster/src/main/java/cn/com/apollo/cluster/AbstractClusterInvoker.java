@@ -6,7 +6,7 @@ import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.Result;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.common.spi.ServiceLoad;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,7 +3,7 @@ package cn.com.apollo.reference;
 
 import cn.com.apollo.common.URI;
 import cn.com.apollo.config.NameServiceConfig;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 
 public interface Reference {
 

@@ -3,7 +3,7 @@ package cn.com.apollo.cluster.dictionary;
 import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.nameservice.Notify;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 
 import java.util.List;
 

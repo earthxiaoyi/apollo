@@ -1,11 +1,11 @@
 package cn.com.apollo.cluster.dictionary;
 
-import cn.com.NettyClient;
+import cn.com.remote.netty.NettyClient;
 import cn.com.apollo.common.Constant;
 import cn.com.apollo.common.Invocation;
 import cn.com.apollo.common.URI;
-import cn.com.apollo.invoke.Invoker;
-import cn.com.apollo.invoke.RpcInvoker;
+import cn.com.apollo.rpc.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.RpcInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

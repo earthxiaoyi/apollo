@@ -1,7 +1,7 @@
 package cn.com.apollo.cluster.loadbalance;
 
 import cn.com.apollo.common.Invocation;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 
 import java.util.List;
 import java.util.Random;

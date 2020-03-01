@@ -1,7 +1,7 @@
 package cn.com.apollo.cluster;
 
 import cn.com.apollo.cluster.dictionary.ServiceDictionary;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 
 public class FailOverCluster implements Cluster {
 

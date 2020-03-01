@@ -6,7 +6,7 @@ import cn.com.apollo.cluster.dictionary.ServiceDictionary;
 import cn.com.apollo.common.URI;
 import cn.com.apollo.common.spi.ServiceLoad;
 import cn.com.apollo.config.NameServiceConfig;
-import cn.com.apollo.invoke.Invoker;
+import cn.com.apollo.rpc.invoke.Invoker;
 import cn.com.apollo.nameservice.NameService;
 import cn.com.apollo.nameservice.factory.NameServiceFactory;
 
